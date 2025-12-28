@@ -1,0 +1,115 @@
+/* General reset and font setup */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif; /* Standard modern font used in Vite/Firebase apps */
+}
+
+body {
+  background-color: #1a1a1a; /* Dark background seen at [00:05:35] */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+#app {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Navigation & Button Visibility Logic */
+nav {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  display: none; /* Hidden by default [00:11:54] */
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+/* The .show class is toggled by JS onAuthStateChanged [00:11:54] */
+button.show {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.login {
+  background-color: white;
+  color: #444;
+}
+
+.login img {
+  width: auto;
+  object-fit: fill; /* Precise size for the Google logo added at [00:05:24] */
+}
+
+.logout {
+  background-color: #ff4b2b;
+  color: white;
+}
+
+/* Form Styles */
+form {
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background-color: #2a2a2a;
+  color: white;
+  outline: none;
+}
+
+input[type="text"]:focus {
+  border-color: #4f46e5; /* Slight highlight on focus */
+}
+
+/* Error/Instructions Message */
+h3 {
+  color: #ff4b2b;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  height: 20px; /* Prevents layout jump when text is empty */
+}
+
+/* To-Do List Items Section */
+section {
+  display: block !important; /* Ensures visibility [00:18:11] */
+  margin-top: 20px;
+  padding: 10px 0;
+}
+
+/* Real-time elements injected by JS [00:18:11] */
+section div {
+  background-color: #ab3333;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: left;
+  animation: fadeIn 0.3s ease;
+  margin-bottom: 10px;
+}
+
+section p {
+  font-size: 1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
