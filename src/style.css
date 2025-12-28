@@ -71,7 +71,7 @@ input[type="text"] {
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #333;
-  background-color: #2a2a2a;
+  background-color: #272020;
   color: white;
   outline: none;
 }
@@ -117,8 +117,13 @@ section p {
   padding: 10px;
   border-radius: 5px;
 }
+/* Specifically ensure the delete button inside a todo-item is visible */
+.todo-item .delete-btn {
+  display: block; 
+}
 
 .delete-btn {
+  display: block !important; /* Forces the button to show */
   background: #ff4d4d;
   color: white;
   border: none;
