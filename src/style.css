@@ -108,6 +108,29 @@ section div {
 section p {
   font-size: 1rem;
 }
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f4f4f4;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.delete-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.delete-btn:hover {
+  background: #cc0000;
+}
+
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
