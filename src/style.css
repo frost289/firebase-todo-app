@@ -112,7 +112,7 @@ section p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f4f4f4;
+  background: #333;
   margin: 10px 0;
   padding: 10px;
   border-radius: 5px;
