@@ -1,29 +1,28 @@
 import './style.css';
 import { app as firebase } from './firebase-config.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signOut 
+} from "firebase/auth";
 import { 
   getFirestore, 
   collection, 
   doc, 
   setDoc, 
-  onSnapshot 
+  onSnapshot, 
+  deleteDoc,
+  query,
+  orderBy 
 } from "firebase/firestore";
 
-
-import { 
-  getFirestore, 
-  collection, 
-  doc,           
-  setDoc, 
-  onSnapshot,
-  deleteDoc     
-} from "firebase/firestore";
-// 1. Initialize Services
+// Initialize Services (ONLY ONCE)
 const auth = getAuth(firebase);
 const db = getFirestore(firebase);
 const googleAuthProvider = new GoogleAuthProvider();
 
-
+// Select Elements
 const loginBtn = document.querySelector('.login');
 const logoutBtn = document.querySelector('.logout');
 const h3 = document.querySelector('h3');
@@ -33,7 +32,7 @@ const input = document.querySelector('input');
 
 const toDosColRef = collection(db, 'toDos');
 
-// Authentication Logic
+//Authentication Logic
 loginBtn.addEventListener('click', () => {
   signInWithPopup(auth, googleAuthProvider).catch(err => console.error(err));
 });
@@ -50,39 +49,39 @@ auth.onAuthStateChanged(user => {
     loginBtn.classList.remove('show');
     h3.innerHTML = '';
 
-   onSnapshot(toDosColRef, (snapshot) => {
-  section.innerHTML = ''; 
-  
-  snapshot.forEach((snapshotDoc) => {
-    const item = snapshotDoc.data();
-    const id = snapshotDoc.id; // Get the document ID
+    // Create a query that sorts by the 'createdAt' field
+    const q = query(toDosColRef, orderBy('createdAt', 'desc'));
 
-    // to-Do container
-    const todoDiv = document.createElement('div');
-    todoDiv.className = 'todo-item';
-    todoDiv.innerHTML = `
-      <p>${item.toDo}</p>
-      <button class="delete-btn">Delete</button>
-    `;
+    // Listen to the SORTED query instead of the whole collection
+    onSnapshot(q, (snapshot) => {
+      section.innerHTML = ''; 
+      
+      snapshot.forEach((snapshotDoc) => {
+        const item = snapshotDoc.data();
+        const id = snapshotDoc.id;
 
-    // delete button event listener
-    const deleteBtn = todoDiv.querySelector('.delete-btn');
-    deleteBtn.addEventListener('click', async () => {
-      // This targets the specific document in Firestore by its ID
-      const docRef = doc(db, 'toDos', id);
-      await deleteDoc(docRef);
+        const todoDiv = document.createElement('div');
+        todoDiv.className = 'todo-item';
+        todoDiv.innerHTML = `
+          <p>${item.toDo}</p>
+          <button class="delete-btn">Delete</button>
+        `;
+
+        const deleteBtn = todoDiv.querySelector('.delete-btn');
+        deleteBtn.addEventListener('click', async () => {
+          const docRef = doc(db, 'toDos', id);
+          await deleteDoc(docRef);
+        });
+
+        section.appendChild(todoDiv);
+      });
     });
-
-    // display to-do item o the screen
-    section.appendChild(todoDiv);
-  });
-});
 
   } else {
     console.log("No user.");
     loginBtn.classList.add('show');
     logoutBtn.classList.remove('show');
-    section.innerHTML = ''; // Clear list on logout
+    section.innerHTML = ''; 
   }
 });
 
@@ -90,14 +89,14 @@ auth.onAuthStateChanged(user => {
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   
-  if (auth.currentUser) {
+  if (auth.currentUser && input.value.trim() !== "") {
     const docRef = doc(toDosColRef); 
     await setDoc(docRef, {
       toDo: input.value,
-      createdAt: new Date() //timestamp(sorting)
+      createdAt: new Date() // This is what the 'orderBy' uses!
     });
     input.value = '';
-  } else {
+  } else if (!auth.currentUser) {
     h3.innerHTML = 'Please log in to add a to do';
   }
 });
