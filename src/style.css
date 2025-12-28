@@ -66,6 +66,10 @@ form {
   margin-bottom: 20px;
 }
 
+form, section {
+  display: none;
+} /* Hidden by default [00:18:11] */
+
 input[type="text"] {
   width: 100%;
   padding: 12px;

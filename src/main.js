@@ -17,6 +17,8 @@ import {
   orderBy 
 } from "firebase/firestore";
 
+
+
 // Initialize Services (ONLY ONCE)
 const auth = getAuth(firebase);
 const db = getFirestore(firebase);
@@ -42,20 +44,23 @@ logoutBtn.addEventListener('click', () => {
 });
 
 // Auth State & Data Loading
+// Auth State & Data Loading
 auth.onAuthStateChanged(user => {
   if (user) {
     console.log("Logged in as:", user.displayName);
+    
+    // 1. UI Visibility: Show app content, hide login
     logoutBtn.classList.add('show');
     loginBtn.classList.remove('show');
-    h3.innerHTML = '';
+    form.style.display = 'flex';     // Shows the input field
+    section.style.display = 'block'; // Shows the list
+    h3.innerHTML = `Welcome, ${user.displayName}`;
 
-    // Create a query that sorts by the 'createdAt' field
+    // 2. Data Loading
     const q = query(toDosColRef, orderBy('createdAt', 'desc'));
 
-    // Listen to the SORTED query instead of the whole collection
     onSnapshot(q, (snapshot) => {
       section.innerHTML = ''; 
-      
       snapshot.forEach((snapshotDoc) => {
         const item = snapshotDoc.data();
         const id = snapshotDoc.id;
@@ -69,8 +74,7 @@ auth.onAuthStateChanged(user => {
 
         const deleteBtn = todoDiv.querySelector('.delete-btn');
         deleteBtn.addEventListener('click', async () => {
-          const docRef = doc(db, 'toDos', id);
-          await deleteDoc(docRef);
+          await deleteDoc(doc(db, 'toDos', id));
         });
 
         section.appendChild(todoDiv);
@@ -78,9 +82,14 @@ auth.onAuthStateChanged(user => {
     });
 
   } else {
+    // 3. UI Visibility: Hide app content, show login
     console.log("No user.");
     loginBtn.classList.add('show');
     logoutBtn.classList.remove('show');
+    
+    form.style.display = 'none';      // Hides the input field
+    section.style.display = 'none';   // Hides the list
+    h3.innerHTML = 'Please log in to manage your To-Dos';
     section.innerHTML = ''; 
   }
 });
